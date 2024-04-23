@@ -1,0 +1,110 @@
+{{- define "common.deployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.deploymentName }}
+  labels:
+    app: {{ .Values.app.label }}
+spec:
+  replicas: {{ .Values.app.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.label }}
+    spec:
+      containers:
+        - name: {{ .Values.app.label }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.service.containerPort }}
+              protocol: TCP
+          env:
+          {{- if .Values.settings.enabledFeatures.name }}
+          - name: SPRING_APPLICATION_NAME
+            value: {{ .Values.app.name }}
+          {{- end }}
+          {{- if .Values.settings.enabledFeatures.configClient }}
+          - name: SPRING_CONFIG_IMPORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_CONFIG_IMPORT
+          - name: SPRING_CLOUD_CONFIG_URI
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_CLOUD_CONFIG_URI
+          {{- end }}
+          {{- if .Values.settings.enabledFeatures.profile }}
+          - name: SPRING_PROFILES_ACTIVE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_PROFILES_ACTIVE
+          {{- end }}
+          {{- if .Values.settings.enabledFeatures.mysql }}
+          - name: SPRING_DATASOURCE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_DATASOURCE_URL
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_DATASOURCE_USERNAME
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_DATASOURCE_PASSWORD
+          {{- end }}
+          {{- if .Values.settings.enabledFeatures.discovery }}
+          - name: SPRING.CLOUD.KUBERNETES.DISCOVERY.DISCOVERY-SERVER-URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING.CLOUD.KUBERNETES.DISCOVERY.DISCOVERY-SERVER-URL
+          {{- end }}
+          {{- if .Values.settings.enabledFeatures.configServer }}
+          - name: SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME
+          - name: SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD
+          {{- end }}
+          {{- if .Values.settings.enabledFeatures.securityServer }}
+          - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI
+          {{- end }}
+          {{- if .Values.settings.enabledFeatures.otel }}
+          - name: JAVA_TOOL_OPTIONS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: JAVA_TOOL_OPTIONS
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: OTEL_EXPORTER_OTLP_ENDPOINT
+          - name: OTEL_METRICS_EXPORTER
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.app.configMapName }}
+                key: OTEL_METRICS_EXPORTER
+          - name: OTEL_SERVICE_NAME
+            value: {{ .Values.appName }}
+          {{- end }}
+  {{- end -}}
