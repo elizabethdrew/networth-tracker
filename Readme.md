@@ -43,6 +43,7 @@ The Networth Tracker is powered by a robust stack of technologies, ensuring a sc
 - [Lombok](<https://projectlombok.org/>): Java library that automatically plugs into your editor and build tools, spicing up your java.
 - [MapStruct](<https://mapstruct.org/>): Code generator that simplifies the implementation of mappings between Java bean types.
 - [OpenAPI](<https://swagger.io/specification/>): Defines a standard, language-agnostic interface to RESTful APIs.
+- [Kafka](<https://kafka.apache.org/>): Kafka manages stream processing and event storage, effectively handling data distribution and processing.
 
 ### Database
 - [MySQL](<https://www.mysql.com/>): Open-source relational database management system.
