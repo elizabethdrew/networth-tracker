@@ -26,10 +26,6 @@ Please see [Versions.md](/Versions.md) for detailed changelog.
   + Kubernetes Discovery Server - Service registration, discovery, and load balancing (For Use With Kubernetes)
 + Keycloak Server - Open-source identity and access management system that provides single sign-on capabilities and security features.
 
-**Monitoring & Observability Services**
-+ 
-  
-
 ## Built With
 
 The Networth Tracker is powered by a robust stack of technologies, ensuring a scalable, efficient, and secure user experience.
