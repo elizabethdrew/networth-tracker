@@ -1,0 +1,91 @@
+spring:
+  application:
+    name: account-service
+  config:
+    import: "optional:configserver:http://configserver:8071/"
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    defer-datasource-initialization: false
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  cloud:
+    function:
+      definition: updateAccountFromTruelayer; updateAccountBalanceFromTruelayer
+    stream:
+      kafka:
+        binder:
+          brokers: kafka:9092
+      bindings:
+        sendNewIsaAccount-out-0:
+          destination: new-isa-account-topic
+        sendNewBalance-out-0:
+          destination: new-balance-topic
+        requestAccountBalanceKafka-out-0:
+          destination: request-account-balance-update-topic
+        updateAccountFromTruelayer-in-0:
+          destination: truelayer-account-update-topic
+          group: account-service-group
+          contentType: application/json
+        updateAccountBalanceFromTruelayer-in-0:
+          destination: truelayer-account-balance-update-topic
+          group: account-balance-service-group
+          contentType: application/json
+
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+
+server:
+  port: 8082
+  servlet:
+    context-path: /
+
+logging:
+  level:
+    root: INFO
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
+info:
+  application:
+    name: ${spring.application.name}
+    version: '@project.version@'
+    spring-cloud-version: '@spring-cloud.version@'
+    spring-boot-version: '@project.parent.version@'
+
+management:
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    info:
+      enabled: true
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0

@@ -1,0 +1,80 @@
+spring:
+  application:
+    name: user-service
+  config:
+    import: "optional:configserver:http://configserver:8071/"
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    defer-datasource-initialization: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+keycloak:
+  logout-redirect-url: http://localhost:8080/contactSupport
+  keyAdmin:
+    realm: master
+    client-id: admin-cli
+    username: admin
+    password: admin
+  keyUser:
+    realm: networth
+    client-id: apigateway
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+
+
+server:
+  port: 8081
+  servlet:
+    context-path: /
+
+logging:
+  level:
+    root: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
+info:
+  application:
+    name: ${spring.application.name}
+    version: '@project.version@'
+    spring-cloud-version: '@spring-cloud.version@'
+    spring-boot-version: '@project.parent.version@'
+
+management:
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    info:
+      enabled: true
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
