@@ -1,14 +1,16 @@
 # Versions
 
+This file contains notes on progress of the application such as version milestones and to do list for future improvements and functionality.
+
 **Outstanding Tasks**
 - Exception handling needs to be added in the Truelayer service
 - All new code needs to be tested more
-- Any issues with us not being able to reach the truelayer api - restart colima first
+- Any issues with us not being able to reach the truelayer api - restart colima first, it's probably the problem
 - All docs need updating.
 - Send credit limit with cards update and add to account
-- Need to move Truelayer info to other gitlab
+- Need to move Truelayer info to config server
 - Keycloak logging users out too quickly
-- Isa Service needs work
+- Isa Service needs work - is not currently functional
 
 ## v1.7.0
 **Date: 01/03/2024**
